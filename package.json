@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/lishangwu/chat#readme",
   "dependencies": {
-    "socket.io": "^2.2.0"
+    "redis": "^2.8.0",
+    "socket.io": "^2.2.0",
+    "socket.io-redis": "^5.2.0"
   }
 }

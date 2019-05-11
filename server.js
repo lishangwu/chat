@@ -4,6 +4,20 @@ const fs = require('fs')
 
 httpd.listen(4000);
 
+const options = {
+    port: 6379,
+    host: '**',
+    password: '**'
+}
+var redis = require('redis')
+// var RedisStore = require('socket.io/lib/stores/redis')
+// var RedisStore = require('socket.io-redis');
+// var pub = redis.createClient(options)
+// var sub = redis.createClient(options)
+// var client = redis.createClient(options)
+const redisAdapter = require('socket.io-redis');
+io.adapter(redisAdapter(options));
+
 function handler(req, res) {
     fs.readFile(__dirname + '/index.html', (err, data) => {
         if (err) {
@@ -17,6 +31,12 @@ function handler(req, res) {
 
 const CLIENT_MESSAGE = 'clientMessage'
 const SERVER_MESSAGE = 'serverMessage'
+
+// io.set('store', new RedisStore({
+//     redisPub: pub,
+//     redisSub: sub,
+//     redisClient: client
+// }))
 io.sockets.on('connection', socket => {
     socket.on(CLIENT_MESSAGE, content => {
         socket.emit(SERVER_MESSAGE, 'You said: ' + content)

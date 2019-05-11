@@ -35,8 +35,16 @@
 
     <script>
         var socket = io.connect('http://localhost:4000')
+        const CLIENT_MESSAGE = 'clientMessage'
+        const SERVER_MESSAGE = 'serverMessage'
 
-        socket.on('serverMessage', function (content) {
+        socket.on('login', function(){
+            var username = prompt('what username would you like to use ?')
+            if(!username) {return}
+            socket.emit('login', username)
+        })
+
+        socket.on(SERVER_MESSAGE, function (content) {
             addMessage(content)
         })
 
@@ -53,11 +61,29 @@
         var inputElement = document.getElementById('input')
         inputElement.onkeydown = function (keyboardEvent) {
             if (keyboardEvent.keyCode === 13) {
-                socket.emit('clientMessage', inputElement.value)
+                // socket.emit(CLIENT_MESSAGE, inputElement.value)
+                sendMessage(inputElement.value)
                 inputElement.value = ''
                 return false
             } else {
                 return true
+            }
+        }
+
+        function sendCommand(command, args){
+            if(command === 'j'){
+                socket.emit('join', args)
+            }else{
+                alert('unknown connand: ' + command)
+            }
+        }
+
+        function sendMessage(msg){
+            var commamdMatch = msg.match(/^\/(\w*)(.*)/)
+            if(commamdMatch){
+                sendCommand(commamdMatch[1], commamdMatch[2].trim())
+            }else{
+                socket.emit(CLIENT_MESSAGE, msg)
             }
         }
 
